@@ -42,14 +42,14 @@
   <% if(!project.children.empty? && showchildren) %>
     <% classes += " closed parent " + cycle("odd", "even") %>
     <% rowid = "id=\""+project_id_lsd+"span\"" %>
-    <% openonclick = "onclick=\"showHide('"+project_id_lsd+"','"+project_id_lsd+"span')\""%>    
+    <% openonclick = "onclick=\"showHide('"+project_id_lsd+"','"+project_id_lsd+"span')\""%>
     <% spanicon = "<span " + openonclick + " class=\"expander\">&nbsp  </span>" %>
   <% else %>
     <% classes += " child" %>
   <% end %>
   <% if(project.parent_id == nil) %>
     <% ancestors.clear %>
-    <% ancestors << project.id %>	
+    <% ancestors << project.id %>
   <% else %>
     <% while (ancestors.any? && !(project.parent_id == ancestors.last)) %>
     <% ancestors.pop %>
@@ -73,7 +73,7 @@
       <% classes += " " + "%04d" % pid %>
     <% end %>
     <% ancestors << project.id %>
-  <% end %> 
+  <% end %>
   <tr class="<%= classes %>" <%= rowid %> >
         <td class="name"><%= "<span style=\"padding-left: " + (2*(ancestors.length-1)).to_s + "em;\"></span>" %><%= spanicon %><%= project.active? ? link_to(h(project.name), {:controller => 'projects', :action => 'show', :id => project}, :class => "project") : h(project.name) %></td>
         <td <%= openonclick %> ><%= textilizable project.short_description, :project => project %></td>
@@ -90,7 +90,7 @@
   </tbody>
 </table>
 
-<a href="#" id="expand_all">Expand All</a>
+<a href="#" id="expand_all"><%=l(:expand_all)%></a>
 
 </div>
 

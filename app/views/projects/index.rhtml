@@ -49,7 +49,7 @@
 			<% end %>
 			<% if(project.parent_id == nil) %>
 				<% ancestors.clear %>
-				<% ancestors << project.id %>	
+				<% ancestors << project.id %>
 			<% else %>
 				<% while (ancestors.any? && !(project.parent_id == ancestors.last)) %>
 					<% ancestors.pop %>
@@ -73,19 +73,19 @@
                                         <% classes += " " + "%04d" % pid %>
 				<% end %>
 				<% ancestors << project.id %>
-			<% end %> 
+			<% end %>
 			<tr class="<%= classes %>" <%= rowid %> >
 				<td class="name"><%= "<span style=\"padding-left: " + (2*(ancestors.length-1)).to_s + "em;\"></span>" %><%= spanicon %><%= project.active? ? link_to(h(project.name), {:controller => 'projects', :action => 'show', :id => project}, :class => "project") : h(project.name) %><span <%= openonclick %> class="empty <%=User.current.member_of?(project) ? 'my-project' : nil%>">&nbsp</span></td>
-				<td <%= openonclick %> ><%= textilizable project.short_description.gsub(/\!.+\!/,""), :project => project %></td>		
+				<td <%= openonclick %> ><%= textilizable project.short_description.gsub(/\!.+\!/,""), :project => project %></td>
 				<td><%= favorite_project_modules_links(project) %></td>
 				<td <%= render_project_progress(project) %></td>
-				<td align="center"><%= format_date(project.created_on) %></td>				
+				<td align="center"><%= format_date(project.created_on) %></td>
 			</tr>
 		<% end %>
 	</tbody>
 </table>
 
-<a href="#" id="expand_all">Expand All</a>
+<a href="#" id="expand_all"><%=l(:expand_all)%></a>
 
 
 <% if User.current.logged? %>
