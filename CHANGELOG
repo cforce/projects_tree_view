@@ -1,3 +1,6 @@
+0.0.6 (2012-05-30):
+    * patched to work with redmine 2.0
+    * UI updated to enforce breakline properly utilised
 0.0.5 (2011-01-23):
     * added js exapnd all button
     * Fixed missing spent time link

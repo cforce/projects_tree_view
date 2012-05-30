@@ -11,13 +11,14 @@ propagates the tree view to the project show page's subprojects list.
 * Anton-zaytsev
 * Shadowbq 
 * cforce
+* danmunn
 ==Changelog
 
 For the complete changelog see the <tt>CHANGELOG</tt>-file in the Projects Tree View plugin directory.
 
 ==Latest stable release
 
-The currently available, latest stable release of the plugin is version <b>0.0.3</b>.
+The currently available, latest stable release of the plugin is version <b>0.0.6</b>.
 
 ==Compatibility
 
