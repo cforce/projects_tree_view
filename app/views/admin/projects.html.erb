@@ -1,49 +1,52 @@
 <div class="contextual">
-<%= link_to l(:label_project_new), {:controller => 'projects', :action => 'new'}, :class => 'icon icon-add' %>
+    <%= link_to l(:label_project_new), {:controller => 'projects', :action => 'new'}, :class => 'icon icon-add' %>
 </div>
 
 <h2><%=l(:label_project_plural)%></h2>
 
 <% form_tag({}, :method => :get) do %>
-<fieldset><legend><%= l(:label_filter_plural) %></legend>
-<label><%= l(:field_status) %> :</label>
-<%= select_tag 'status', project_status_options_for_select(@status), :class => "small", :onchange => "this.form.submit(); return false;"  %>
-<label><%= l(:label_project) %>:</label>
-<%= text_field_tag 'name', params[:name], :size => 30 %>
-<%= submit_tag l(:button_apply), :class => "small", :name => nil %>
-</fieldset>
+    <fieldset>
+      <legend><%= l(:label_filter_plural) %></legend>
+      <label><%= l(:field_status) %> :</label>
+      <%= select_tag 'status', project_status_options_for_select(@status), :class => "small", :onchange => "this.form.submit(); return false;"  %>
+      <label><%= l(:label_project) %>:</label>
+      <%= text_field_tag 'name', params[:name], :size => 30 %>
+      <%= submit_tag l(:button_apply), :class => "small", :name => nil %>
+    </fieldset>
 <% end %>
 &nbsp;
 
 <div class="autoscroll">
-<table class="list">
-  <thead><tr>
-	<th><%=l(:label_project)%></th>
-	<th><%=l(:field_description)%></th>
-	<th><%=l(:field_is_public)%></th>
-	<th><%=l(:field_created_on)%></th>
-  <th></th>
-  </tr></thead>
+  <table class="list">
+    <thead>
+    <tr>
+      <th><%=l(:label_project)%></th>
+      <th><%=l(:field_description)%></th>
+      <th><%=l(:field_is_public)%></th>
+      <th><%=l(:field_created_on)%></th>
+      <th></th>
+    </tr>
+    </thead>
   <tbody>
-<% ancestors = [] %>
-<% for project in @projects %>
-  <% rowid = "" %>
-  <% classes = "" %>
-  <% spanicon = "" %>
-  <% openonclick = "" %>
-  <% showchildren = false %>
-  <% project_id_lsd = "%04d" % project.id %>
-  <% project.children.each do |child| %>
-     <% if @projects.include?(child) %>
-       <% showchildren = true %>
-       <% break %>
-     <% end %>
-  <% end %>
+  <% ancestors = [] %>
+  <% for project in @projects %>
+      <% rowid = "" %>
+      <% classes = "" %>
+      <% spanicon = "" %>
+      <% openonclick = "" %>
+      <% showchildren = false %>
+      <% project_id_lsd = "%04d" % project.id %>
+      <% project.children.each do |child| %>
+          <% if @projects.include?(child) %>
+              <% showchildren = true %>
+              <% break %>
+          <% end %>
+      <% end %>
   <% if(!project.children.empty? && showchildren) %>
-    <% classes += " closed parent " + cycle("odd", "even") %>
-    <% rowid = "id=\""+project_id_lsd+"span\"" %>
-    <% openonclick = "onclick=\"showHide('"+project_id_lsd+"','"+project_id_lsd+"span')\""%>
-    <% spanicon = "<span " + openonclick + " class=\"expander\">&nbsp  </span>" %>
+      <% classes += " closed parent " + cycle("odd", "even") %>
+      <% rowid = "#{project_id_lsd}span" %>
+      <% openonclick = "showHide('#{project_id_lsd}','#{project_id_lsd}span')".html_safe%>
+      <% spanicon = content_tag(:span, "&nbsp; ".html_safe, {:onclick => openonclick, :class => "expander"}) %>
   <% else %>
     <% classes += " child" %>
   <% end %>
@@ -54,19 +57,23 @@
     <% while (ancestors.any? && !(project.parent_id == ancestors.last)) %>
     <% ancestors.pop %>
   <% end %>
-  <% classes += " hide" %>
+  <% classes += " hide".html_safe %>
   <% if( !(ancestors.detect {|pid| pid == project.parent_id })) %>
     <% prvclasses = "closed show parent " + cycle("odd", "even") %>
     <% ancestors.each do |pid| %>
       <% prvclasses += " " + "%04d" % pid %>
     <% end %>
     <% project_parent_id_lsd = "%04d" % project.parent.id %>
-    <% openonclick = "onclick=\"showHide('"+project_parent_id_lsd+"','"+project_parent_id_lsd+"span')\"" %>
-    <tr class="<%= prvclasses %>" id="<%= project_parent_id_lsd + "span" %>" >
-      <td class="name" ><%= "<span style=\"padding-left: " + (2*(ancestors.length-1)).to_s + "em;\"></span>" %><%="<span " + openonclick + " class=\"expander\" >&nbsp </span>" %><%= h("<Private Project>") %><span <%= openonclick %> class="empty">&nbsp</span></td>
-      <td <%= openonclick %> >Project is private. </td>
-      </span>
-    </tr>
+    <% openonclick = "showHide('#{project_parent_id_lsd}','#{project_parent_id_lsd}span')".html_safe %>
+    <% content_tag :tr, :class => prvclasses, :id => "#{project_parent_id_lsd}span" do -%>
+      <td class="name" >
+        <%= content_tag :span, '', :style => "padding-left: #{(2*(ancestors.length-1)).to_s}em;" %>
+        <%= content_tag :span, '&nbsp; '.html_safe, :onclick => openonclick, :class => "expander" %>
+        <%= h("<Private Project>") %>
+        <%= content_tag :span, '&nbsp; '.html_safe, :onclick => openonclick, :class => "empty" %>
+      </td>
+      <%= content_tag :td, 'Project is private.', :onclick => openonclick %>
+    <% end -%>
     <% ancestors << project.parent_id %>
     <% end %>
     <% ancestors.each do |pid| %>
@@ -74,18 +81,25 @@
     <% end %>
     <% ancestors << project.id %>
   <% end %>
-  <tr class="<%= classes %>" <%= rowid %> >
-        <td class="name"><%= "<span style=\"padding-left: " + (2*(ancestors.length-1)).to_s + "em;\"></span>" %><%= spanicon %><%= project.active? ? link_to(h(project.name), {:controller => 'projects', :action => 'show', :id => project}, :class => "project") : h(project.name) %></td>
-        <td <%= openonclick %> ><%= textilizable project.short_description, :project => project %></td>
-	<td align="center"><%= image_tag 'true.png' if project.is_public? %></td>
-	<td align="center"><%= format_date(project.created_on) %></td>
-        <td class="buttons">
-           <%= link_to(l(:button_archive), { :controller => 'projects', :action => 'archive', :id => project, :status => params[:status] }, :confirm => l(:text_are_you_sure), :method => :post, :class => 'icon icon-lock') if project.active? %>
-           <%= link_to(l(:button_unarchive), { :controller => 'projects', :action => 'unarchive', :id => project, :status => params[:status] }, :method => :post, :class => 'icon icon-unlock') if !project.active? && (project.parent.nil? || project.parent.active?) %>
-           <%= link_to(l(:button_copy), { :controller => 'projects', :action => 'copy', :id => project }, :class => 'icon icon-copy') %>
-           <%= link_to(l(:button_delete),  project_path(project), :method => :delete, :class => 'icon icon-del') %>
-        </td>
-  </tr>
+  <% content_params = {}; %>
+  <% content_params[:class] = classes unless classes.empty? %>
+  <% content_params[:id] = rowid unless rowid.empty? %>
+  <%= content_tag :tr, content_params do -%>
+      <td class="name">
+        <%= content_tag :span, '', :style => "padding-left: #{(2*(ancestors.length-1)).to_s}em;" %>
+        <%= spanicon %>
+        <%= project.active? ? link_to(h(project.name), {:controller => 'projects', :action => 'show', :id => project}, :class => "project") : h(project.name) %>
+      </td>
+      <%= content_tag :td, :onclick => openonclick do -%><%= textilizable project.short_description, :project => project %><% end -%>
+      <td align="center"><%= image_tag 'true.png' if project.is_public? %></td>
+      <td align="center"><%= format_date(project.created_on) %></td>
+      <td class="buttons">
+         <%= link_to(l(:button_archive), { :controller => 'projects', :action => 'archive', :id => project, :status => params[:status] }, :confirm => l(:text_are_you_sure), :method => :post, :class => 'icon icon-lock') if project.active? %>
+         <%= link_to(l(:button_unarchive), { :controller => 'projects', :action => 'unarchive', :id => project, :status => params[:status] }, :method => :post, :class => 'icon icon-unlock') if !project.active? && (project.parent.nil? || project.parent.active?) %>
+         <%= link_to(l(:button_copy), { :controller => 'projects', :action => 'copy', :id => project }, :class => 'icon icon-copy') %>
+         <%= link_to(l(:button_delete),  project_path(project), :method => :delete, :class => 'icon icon-del') %>
+      </td>
+  <% end -%>
 <% end %>
   </tbody>
 </table>

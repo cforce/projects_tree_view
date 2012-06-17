@@ -1,13 +1,13 @@
 require 'redmine'
 
 # Patches to the Redmine core.
-require 'projectstreeview_projects_helper_patch'
+require 'projects_tree_view'
 
 Redmine::Plugin.register :projects_tree_view do
   name 'Projects Tree View plugin'
   author 'Chris Peterson and Github community'
   description 'This is a Redmine plugin which will turn the projects page into a tree view'
-  version '0.0.6'
+  version '0.0.7'
 end
 
 class ProjectsTreeViewListener < Redmine::Hook::ViewListener
