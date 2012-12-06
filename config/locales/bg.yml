@@ -1,0 +1,8 @@
+bg:
+  # Bulgarian strings go here
+
+  field_versions: Версии
+  field_go_to: Модули
+  subprojects: подпроекти
+  expand_all: "Разгъване"
+  collapse_all: "Свиване"
