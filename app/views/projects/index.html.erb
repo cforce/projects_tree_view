@@ -20,7 +20,12 @@
       <th><%= l(:field_description)%></th>
     </tr>
   </thead>
-  <tbody>
+<p>
+
+<%= link_to(l(:expand_all), "#", :onclick => 'expandAll()')%><span>&nbsp;/&nbsp;</span><%= link_to l(:collapse_all), "#", :onclick => 'collapseAll()' %>
+</p>
+
+<tbody>
     <% ancestors = [] %>
     <% plevel = 0 %>
     <% project_tree(@projects) do |project, level| %>
