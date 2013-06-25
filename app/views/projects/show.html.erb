@@ -19,158 +19,138 @@
 
 <div class="splitcontentleft">
   <% if @project.description.present? %>
-  <div class="wiki">
-    <%= textilizable @project.description %>
-  </div>
-  <% end %>
-  <ul>
-  <% unless @project.homepage.blank? %>
-    <li><%=l(:field_homepage)%>: <%= link_to h(@project.homepage), @project.homepage %></li>
+    <div class="wiki">
+      <%= textilizable @project.description %>
+    </div>
   <% end %>
   <% if @subprojects.any? %>
-		<table class="list">
-			<thead>
-				<tr>
-					<th><%=l(:label_project)%></th>
-					<th><%=l(:field_description)%></th>
-					<th><%=l(:field_go_to)%></th>
-					<th><%=l(:field_versions)%></th>
-					<th><%=l(:field_created_on)%></th>
-				</tr>
-			</thead>
-			<tbody>
-				<% ancestors = [] %>
-				<% for project in @subprojects %>
-					<% rowid = "" %>
-					<% classes = "" %>
-					<% spanicon = "" %>
-					<% openonclick = "" %>
-					<% showchildren = true %>
-					<% project_id_lsd = "%04d" % project.id %>
-					<% project.children.each do |child| %>
-						<% if @projects.include?(child) %>
-							<% showchildren = true %>
-							<% break %>
-						<% end %>
-					<% end %>
-					<% if(!project.children.empty? && showchildren) %>
-						<% classes += " open parent " + cycle("odd", "even") %>
-						<% rowid = "#{project_id_lsd}span" %>
-						<% openonclick = "showHide('#{project_id_lsd}','#{project_id_lsd}span')".html_safe %>
-						<% spanicon = content_tag(:span, "&nbsp; ".html_safe, {:onclick => openonclick, :class => "expander"}) %>
-					<% else %>
-						<% classes += " child" %>
-					<% end %>
-					<% if(project.parent_id == nil) %>
-						<% ancestors.clear %>
-						<% ancestors << project.id %>
-					<% else %>
-						<% while (ancestors.any? && !(project.parent_id == ancestors.last)) %>
-							<% ancestors.pop %>
-						<% end %>
-						<% if( !(ancestors.detect {|pid| pid == project.parent_id })) %>
-							<% prvclasses = "open show parent " + cycle("odd", "even") %>
-							<% ancestors.each do |pid| %>
-								<% prvclasses += " " + "%04d" % pid %>
-							<% end %>
-							<% project_parent_id_lsd = "%04d" % project.parent.id %>
-							<% openonclick = "showHide('"+project_parent_id_lsd+"','"+project_parent_id_lsd+"span')".html_safe %>
-							<%= content_tag :tr, :id => project_parent_id_lsd + "span", :class => prvclasses do -%>
-								<td class="name" >
-									<%= content_tag(:span, "&nbsp; ".html_safe, :onclick => openonclick, :class => "expander") %>
-									<%=  h(project.parent.name)%>
-									<%= content_tag(:span, "&nbsp; ".html_safe, :onclick => openonclick, :class => "empty") %>
-								</td>
-								<%= content_tag :td, :onclick => openonclick do -%><%= textilizable project.parent.short_description.gsub(/\!.+\!/,""), :project => project.parent %><% end -%>
-								<td><%= favorite_project_modules_links(project.parent) %></td>
-								<td><%= render_project_progress(project.parent) %></td>
-								<td align="center"><%= format_date(project.parent.created_on) %></td>
-								</span>
-							<% end -%>
-							<% ancestors << project.parent_id %>
-						<% end %>
-						<% ancestors.each do |pid| %>
-							<% classes += " " + "%04d" % pid %>
-						<% end %>
-						<% ancestors << project.id %>
-					<% end %>
-					<%= content_tag :tr, :class => classes, :id => rowid do -%>
-						<td class="name">
-						  <%= content_tag :span, '', :style => "padding-left: #{(2*(ancestors.length-1)).to_s}em;" %>
-						  <%= spanicon %>
-						  <%= project.active? ? link_to(h(project.name), {:controller => 'projects', :action => 'show', :id => project}, :class => "project") : h(project.name) %>
-						  <%= content_tag :span, '&nbsp;'.html_safe, :onclick => openonclick, :class => "empty #{User.current.member_of?(project) ? 'my-project' : nil}"%>
-						</td>
-						<%= content_tag :td, :onclick => openonclick do -%><%= textilizable project.short_description.gsub(/\!.+\!/,""), :project => project %><% end -%>
-						<td><%= favorite_project_modules_links(project) %></td>
-						<td><%= render_project_progress(project) %></td>
-						<td align="center"><%= format_date(project.created_on) %></td>
-					<% end -%>
-				<% end %>
-			</tbody>
-		</table>
+    <div class="issues box">
+      <table class="list">
+        <thead>
+          <tr>
+            <th><%=l(:label_project)%></th>
+            <th><%=l(:field_description)%></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% ancestors = [] %>
+          <% for project in @subprojects %>
+            <% rowid = "" %>
+            <% classes = " child" %>
+            <% spanicon = "" %>
+            <% openonclick = "" %>
+            <% showchildren = true %>
+            <% if(project.parent_id == nil) %>
+              <% ancestors.clear %>
+              <% ancestors << project.id %>
+            <% else %>
+              <% while (ancestors.any? && !(project.parent_id == ancestors.last)) %>
+                <% ancestors.pop %>
+              <% end %>
+              <% if( !(ancestors.detect {|pid| pid == project.parent_id })) %>
+                <% prvclasses = "open show parent " + cycle("odd", "even") %>
+                <% ancestors.each do |pid| %>
+                  <% prvclasses += " " + "%04d" % pid %>
+                <% end %>
+                <% project_parent_id_lsd = "%04d" % project.parent.id %>
+                <% openonclick = "showHide('"+project_parent_id_lsd+"','"+project_parent_id_lsd+"span')".html_safe %>
+                <%= content_tag :tr, :id => project_parent_id_lsd + "span", :class => prvclasses do -%>
+                <td class="name" >
+                  <%= content_tag(:span, "&nbsp; ".html_safe, :onclick => openonclick, :class => "expander") %>
+                  <%=  h(project.parent.name)%>
+                  <%= content_tag(:span, "&nbsp; ".html_safe, :onclick => openonclick, :class => "empty") %>
+                </td>
+                <%= content_tag :td, :onclick => openonclick do -%><%= textilizable project.parent.short_description.gsub(/\!.+\!/,""), :project => project.parent %><% end -%>
+                </span>
+              <% end -%>
+              <% ancestors << project.parent_id %>
+            <% end %>
+            <% ancestors.each do |pid| %>
+              <% classes += " " + "%04d" % pid %>
+            <% end %>
+            <% ancestors << project.id %>
+          <% end %>
+          <%= content_tag :tr, :class => classes, :id => rowid do -%>
+            <td class="name">
+              <%= content_tag :span, '', :style => "padding-left: #{(2*(ancestors.length-1)).to_s}em;" %>
+              <%= spanicon %>
+              <%= project.active? ? link_to(h(project.name), {:controller => 'projects', :action => 'show', :id => project}, :class => "project") : h(project.name) %>
+              <%= content_tag :span, '&nbsp;'.html_safe, :onclick => openonclick, :class => "empty #{User.current.member_of?(project) ? 'my-project' : nil}"%>
+            </td>
+            <%= content_tag :td, :onclick => openonclick do -%><%= textilizable project.short_description.gsub(/\!.+\!/,""), :project => project %><% end -%>
+          <% end -%>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
   <% end %>
-  <% @project.visible_custom_field_values.each do |custom_value| %>
-  <% if !custom_value.value.blank? %>
-     <li><%=h custom_value.custom_field.name %>: <%=h show_value(custom_value) %></li>
-  <% end %>
-  <% end %>
-  </ul>
 
-  <% if User.current.allowed_to?(:view_issues, @project) %>
-  <div class="issues box">
-    <h3><%=l(:label_issue_tracking)%></h3>
-    <ul>
-    <% for tracker in @trackers %>
-      <li><%= link_to h(tracker.name), project_issues_path(@project, :set_filter => 1, :tracker_id => tracker.id) %>:
-          <%= l(:label_x_open_issues_abbr_on_total, :count => @open_issues_by_tracker[tracker].to_i,
-                                                    :total => @total_issues_by_tracker[tracker].to_i) %>
-      </li>
+  <ul>
+    <% unless @project.homepage.blank? %>
+      <li><%=l(:field_homepage)%>: <%= link_to h(@project.homepage), @project.homepage %></li>
     <% end %>
-    </ul>
-    <p>
-      <%= link_to l(:label_issue_view_all), project_issues_path(@project, :set_filter => 1) %>
-      <% if User.current.allowed_to?(:view_calendar, @project, :global => true) %>
-        | <%= link_to l(:label_calendar), project_calendar_path(@project) %>
+    <% @project.visible_custom_field_values.each do |custom_value| %>
+      <% if !custom_value.value.blank? %>
+        <li><%=h custom_value.custom_field.name %>: <%=h show_value(custom_value) %></li>
       <% end %>
-      <% if User.current.allowed_to?(:view_gantt, @project, :global => true) %>
-        | <%= link_to l(:label_gantt), project_gantt_path(@project) %>
-      <% end %>
-    </p>
-  </div>
-  <% end %>
+    <% end %>
+  </ul>
   <%= call_hook(:view_projects_show_left, :project => @project) %>
 </div>
 
 <div class="splitcontentright">
+  <% if User.current.allowed_to?(:view_issues, @project) %>
+    <div class="issues box">
+      <h3><%=l(:label_issue_tracking)%></h3>
+      <ul>
+        <% for tracker in @trackers %>
+          <li><%= link_to h(tracker.name), project_issues_path(@project, :set_filter => 1, :tracker_id => tracker.id) %>:
+            <%= l(:label_x_open_issues_abbr_on_total, :count => @open_issues_by_tracker[tracker].to_i,
+              :total => @total_issues_by_tracker[tracker].to_i) %>
+          </li>
+        <% end %>
+      </ul>
+      <p>
+        <%= link_to l(:label_issue_view_all), project_issues_path(@project, :set_filter => 1) %>
+        <% if User.current.allowed_to?(:view_calendar, @project, :global => true) %>
+          | <%= link_to l(:label_calendar), project_calendar_path(@project) %>
+        <% end %>
+        <% if User.current.allowed_to?(:view_gantt, @project, :global => true) %>
+          | <%= link_to l(:label_gantt), project_gantt_path(@project) %>
+        <% end %>
+      </p>
+    </div>
+  <% end %>
+
+
   <%= render :partial => 'members_box' %>
 
   <% if @news.any? && authorize_for('news', 'index') %>
-  <div class="news box">
-    <h3><%=l(:label_news_latest)%></h3>
-    <%= render :partial => 'news/news', :collection => @news %>
-    <p><%= link_to l(:label_news_view_all), project_news_index_path(@project) %></p>
-  </div>
+    <div class="news box">
+      <h3><%=l(:label_news_latest)%></h3>
+      <%= render :partial => 'news/news', :collection => @news %>
+      <p><%= link_to l(:label_news_view_all), project_news_index_path(@project) %></p>
+    </div>
   <% end %>
   <%= call_hook(:view_projects_show_right, :project => @project) %>
 </div>
 
 <% content_for :sidebar do %>
-    <% if @total_hours.present? %>
+  <% if @total_hours.present? %>
     <h3><%= l(:label_spent_time) %></h3>
     <p><span class="icon icon-time"><%= l_hours(@total_hours) %></span></p>
     <p>
-    <% if User.current.allowed_to?(:log_time, @project) %>
-      <%= link_to l(:button_log_time), new_project_time_entry_path(@project) %> |
-    <% end %>
-    <%= link_to(l(:label_details), project_time_entries_path(@project)) %> |
-    <%= link_to(l(:label_report), report_project_time_entries_path(@project)) %></p>
-    <% end %>
-    <%= call_hook(:view_projects_show_sidebar_bottom, :project => @project) %>
+      <% if User.current.allowed_to?(:log_time, @project) %>
+        <%= link_to l(:button_log_time), new_project_time_entry_path(@project) %> |
+      <% end %>
+      <%= link_to(l(:label_details), project_time_entries_path(@project)) %> |
+      <%= link_to(l(:label_report), report_project_time_entries_path(@project)) %></p>
+  <% end %>
+  <%= call_hook(:view_projects_show_sidebar_bottom, :project => @project) %>
 <% end %>
 
 <% content_for :header_tags do %>
-<%= auto_discovery_link_tag(:atom, {:controller => 'activities', :action => 'index', :id => @project, :format => 'atom', :key => User.current.rss_key}) %>
+  <%= auto_discovery_link_tag(:atom, {:controller => 'activities', :action => 'index', :id => @project, :format => 'atom', :key => User.current.rss_key}) %>
 <% end %>
 
 <% html_title(l(:label_overview)) -%>
