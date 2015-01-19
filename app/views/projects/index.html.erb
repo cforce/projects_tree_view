@@ -16,7 +16,9 @@
             <th><%=l(:label_project)%></th>
             <th><%=l(:field_description)%></th>
             <th><%=l(:field_go_to)%></th>
-            <th><%=l(:field_versions)%></th>
+			<% if Setting.plugin_projects_tree_view['show_project_progress'] %>
+				<th><%=l(:field_versions)%></th>
+			<% end %> 
             <th><%=l(:field_created_on)%></th>
         </tr>
     </thead>
@@ -85,7 +87,9 @@
                 </td>
                 <%= content_tag :td, :onclick => openonclick do -%><%= textilizable project.short_description.gsub(/\!.+\!/,""), :project => project %><% end -%>
                 <td><%= favorite_project_modules_links(project) %></td>
-                <td><%= render_project_progress(project) %></td>
+				<% if Setting.plugin_projects_tree_view['show_project_progress'] %>
+					<td <%= render_project_progress(project) %></td>
+				<% end %>				
                 <td align="center"><%= format_date(project.created_on) %></td>
             <% end -%>
         <% end %>
