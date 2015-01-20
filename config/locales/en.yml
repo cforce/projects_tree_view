@@ -5,3 +5,5 @@ en:
   field_go_to: Go to module
   subprojects: sub projects
   expand_all: "Expand All"
+  show_progress: "Show project progress"
+  show_modules: "Show module list"

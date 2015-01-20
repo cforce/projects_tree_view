@@ -1,0 +1,12 @@
+<p>
+  <table> 
+    <tr>
+      <td><%= l(:show_progress) %></td>
+      <td><%= check_box_tag('settings[show_project_progress]', true, @settings['show_project_progress'])%></td>
+    </tr>
+    <tr>
+      <td><%= l(:show_modules) %></td>
+      <td><%= check_box_tag('settings[show_available_modules]', true, @settings['show_available_modules'])%></td>
+    </tr>
+  </table>
+</p>
