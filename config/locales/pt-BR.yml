@@ -4,3 +4,4 @@ pt-BR:
   subprojects: "Sub-projetos"
   expand_all: "Expandir todos os projetos"
   show_progress: "Show project progress"
+  show_modules: "Show module list"

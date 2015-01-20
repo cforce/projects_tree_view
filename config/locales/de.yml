@@ -1,8 +1,9 @@
-de:
+﻿de:
   # German strings go here
 
   field_versions: Versionen
   field_go_to: zu einem Modul wechseln
   subprojects: Untergeordnete Bereiche
   show_progress: "Projektfortschritt anzeigen"
+  show_modules: "Module in Projektübersichtsliste anzeigen"
  

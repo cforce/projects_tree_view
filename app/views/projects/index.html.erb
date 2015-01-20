@@ -15,7 +15,9 @@
         <tr>
             <th><%=l(:label_project)%></th>
             <th><%=l(:field_description)%></th>
-            <th><%=l(:field_go_to)%></th>
+			<% if Setting.plugin_projects_tree_view['show_available_modules'].present? %>
+				<th><%= l(:field_go_to)%></th>
+			<% end %>
 			<% if Setting.plugin_projects_tree_view['show_project_progress'] %>
 				<th><%=l(:field_versions)%></th>
 			<% end %> 
@@ -86,7 +88,9 @@
                   <%= content_tag :span, '&nbsp;'.html_safe, :onclick => openonclick, :class => "empty #{User.current.member_of?(project) ? 'my-project' : nil}"%>
                 </td>
                 <%= content_tag :td, :onclick => openonclick do -%><%= textilizable project.short_description.gsub(/\!.+\!/,""), :project => project %><% end -%>
-                <td><%= favorite_project_modules_links(project) %></td>
+				<% if Setting.plugin_projects_tree_view['show_available_modules'].present? %>
+					<td><%= favorite_project_modules_links(project) %></td>
+				<% end %>
 				<% if Setting.plugin_projects_tree_view['show_project_progress'] %>
 					<td <%= render_project_progress(project) %></td>
 				<% end %>				
