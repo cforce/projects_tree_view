@@ -3,4 +3,7 @@ de:
 
   field_versions: Versionen
   field_go_to: zu einem Modul wechseln
-  subprojects: Untergeordnete Bereiche
+  subprojects: Unterprojekte
+  expand_all: "Alle aufklappen"
+  collapse_all: "Alle zuklappen"
+  show_progress: "Zeige Projektfortschritt"
